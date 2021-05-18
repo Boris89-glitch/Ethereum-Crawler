@@ -8,7 +8,6 @@ const getTokensBtn = document.querySelector('#btn-get-tokens');
 const getBalanceBtn = document.querySelector('#get-balance');
 const output = document.querySelector('#output');
 const web3 = new Web3('https://eth-mainnet.alchemyapi.io/v2/Is-sBu0jJVk4VcERAq1glBpwXkGVXG7W');
-const test_address = '0x95A107EB98446050d988c01bbc698a58db6C6334';
 web3.eth.net.isListening().then(() => console.log('Connected.'))
   .catch(e => console.log('Something went wrong: ' + e));
 
@@ -27,9 +26,9 @@ getBalanceBtn.addEventListener('click', async (e) => {
     let blockTime = block.timestamp;
     if ((blockTime - dateEntered) > 2592000 * 12)
       blockNum = blockNum - 125000 * 12;
-    else if ((blockTime - dateEntered) > 2592000) //mesec dana razlika u datumu
+    else if ((blockTime - dateEntered) > 2592000)
       blockNum = blockNum - 125000;
-    else if ((blockTime - dateEntered) > 86400 * 5) // 5 dana
+    else if ((blockTime - dateEntered) > 86400 * 5)
       blockNum = blockNum - 4320 * 5;
     else if ((blockTime - dateEntered) > 86400)
       blockNum = blockNum - 4320;
@@ -51,8 +50,6 @@ getBalanceBtn.addEventListener('click', async (e) => {
   } catch (e) {
     output.innerHTML = `${e}`;
   }
-
-
 });
 /////////////////////////////////////////////////// transactions ////////////////////////////////////////////////////////
 async function getTransactions() {
@@ -93,7 +90,7 @@ getTransactionsBtn.addEventListener('click', (e) => {
   container2.innerHTML = '';
   getTransactions();
 });
-///////////////////////////////////////////////////////////// tokens ////////////////////////////////////////////////////
+/////////////////////////////////////////////////// tokens tx ////////////////////////////////////////////////////
 async function getTokens() {
   const blockField = document.querySelector('#block').value;
   const walletField = document.querySelector('#wallet').value;
@@ -134,7 +131,7 @@ getTokensBtn.addEventListener('click', (e) => {
   getTokens();
 });
 
-////////// copyToClipboard /////////////////////
+////////// copyToClipboard ////////////
 document.querySelector('div').onclick = e => {
   copyText(document.getElementById(e.target.id));
 }
@@ -182,24 +179,22 @@ function saveWallet() {
   let walletAddress = document.getElementById('wallet').value;
   let data = { address: `${walletAddress}` };
 
-  if (walletAddress.substring(0, 2) !== '0x') {
+  if (walletAddress.length < 42) {
     container2.innerHTML = '';
-    container2.innerHTML = 'Only Ethereum wallets accepted.';
-    throw new Error("Only Ethereum wallets accepted.");
-  }
+    container2.innerHTML = 'Please enter a valid wallet address, it needs to have 42 characters.';
+    throw new Error("Not a wallet, needs to have 42 characters.");
 
-  if (!walletAddress.match(values)) {
+  }
+  else if (!walletAddress.match(values)) {
     container2.innerHTML = '';
     container2.innerHTML = 'Cannot contain special characters.';
     throw new Error("Cannot contain special characters.");
 
   }
-
-  if (walletAddress.length < 42) {
+  else if (walletAddress.substring(0, 2) !== '0x') {
     container2.innerHTML = '';
-    container2.innerHTML = 'Not a wallet, needs to have 42 characters.';
-    throw new Error("Not a wallet, needs to have 42 characters.");
-
+    container2.innerHTML = 'Only Ethereum wallets accepted.';
+    throw new Error("Only Ethereum wallets accepted.");
   }
 
   fetch('api/wallets', {
