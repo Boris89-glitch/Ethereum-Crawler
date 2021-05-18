@@ -1,0 +1,24 @@
+.container, .pure-form {
+  width: 60%;
+  margin: 100px auto;
+}
+.result-container > div, .result-container2 > div {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+div > a,p {
+    color: gray;
+    padding: 3px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+  a:hover {
+    background-color: rgb(202, 247, 255);
+    color:black;
+  }
+#btn-get-tokens{
+  display: inline;
+}
