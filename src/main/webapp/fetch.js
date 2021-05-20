@@ -24,8 +24,9 @@ getBalanceBtn.addEventListener('click', async (e) => {
   while (true) {
     let block = await web3.eth.getBlock(blockNum);
     let blockTime = block.timestamp;
+    //compares block creation time with entered date and lowers the block num subsequently
     if ((blockTime - dateEntered) > 2592000 * 12)
-      blockNum = blockNum - 125000 * 12;
+      blockNum = blockNum - 125000 * 12; //~ moves whole year
     else if ((blockTime - dateEntered) > 2592000)
       blockNum = blockNum - 125000;
     else if ((blockTime - dateEntered) > 86400 * 5)
@@ -53,8 +54,8 @@ getBalanceBtn.addEventListener('click', async (e) => {
 });
 /////////////////////////////////////////////////// transactions ////////////////////////////////////////////////////////
 async function getTransactions() {
-  const blockField = document.querySelector('#block').value;
-  const walletField = document.querySelector('#wallet').value;
+  let blockField = document.querySelector('#block').value;
+  let walletField = document.querySelector('#wallet').value;
   try {
     const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${walletField}&startblock=${blockField}&endblock=99999999&sort=asc&apikey=VCBWHJ5QX2FRDZRAIK6D5SVPJSAX1W4XQW`);
 
@@ -69,7 +70,23 @@ async function getTransactions() {
       div.innerHTML = `<p>${transactions.message}</p>`
       container2.append(div);
     }
+    if (walletField.length < 42) {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Please enter a valid wallet address, it needs to have 42 characters.';
+      throw new Error("Not a wallet, needs to have 42 characters.");
 
+    }
+    if (!walletField.match(values)) {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Cannot contain special characters.';
+      throw new Error("Cannot contain special characters.");
+
+    }
+    if (walletField.substring(0, 2) !== '0x') {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Only Ethereum wallets accepted.';
+      throw new Error("Only Ethereum wallets accepted.");
+    }
     transactions.result.forEach(t => {
       const div = document.createElement('div');
       div.innerHTML =
@@ -108,7 +125,23 @@ async function getTokens() {
       div.innerHTML = `<p>${transactions.message}</p>`
       container2.append(div);
     }
+    if (walletField.length < 42) {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Please enter a valid wallet address, it needs to have 42 characters.';
+      throw new Error("Not a wallet, needs to have 42 characters.");
 
+    }
+    if (!walletField.match(values)) {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Cannot contain special characters.';
+      throw new Error("Cannot contain special characters.");
+
+    }
+    if (walletField.substring(0, 2) !== '0x') {
+      container2.innerHTML = '';
+      container2.innerHTML = 'Only Ethereum wallets accepted.';
+      throw new Error("Only Ethereum wallets accepted.");
+    }
     transactions.result.forEach(t => {
       const div = document.createElement('div');
       div.innerHTML =
@@ -174,7 +207,7 @@ getWallets.addEventListener('click', () => {
   container.innerHTML = '';
   fetchDbWallets();
 });
-
+////////////// save wallet /////////////
 function saveWallet() {
   let walletAddress = document.getElementById('wallet').value;
   let data = { address: `${walletAddress}` };
@@ -185,13 +218,13 @@ function saveWallet() {
     throw new Error("Not a wallet, needs to have 42 characters.");
 
   }
-  else if (!walletAddress.match(values)) {
+  if (!walletAddress.match(values)) {
     container2.innerHTML = '';
     container2.innerHTML = 'Cannot contain special characters.';
     throw new Error("Cannot contain special characters.");
 
   }
-  else if (walletAddress.substring(0, 2) !== '0x') {
+  if (walletAddress.substring(0, 2) !== '0x') {
     container2.innerHTML = '';
     container2.innerHTML = 'Only Ethereum wallets accepted.';
     throw new Error("Only Ethereum wallets accepted.");

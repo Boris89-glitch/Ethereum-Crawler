@@ -9,25 +9,25 @@ import java.util.List;
 @RequestMapping(path  = "api/wallets")
 public class WalletController {
 
-   private final WalletService service;
+   private final WalletService walletService;
 
    @Autowired
     public WalletController(WalletService service) {
-        this.service = service;
+        this.walletService = service;
     }
 
     @GetMapping
     public List<Wallet>getWallets(){
-        return service.getWallets();
+        return walletService.getWallets();
     }
 
     @PostMapping
     public void registerWallet(@RequestBody Wallet wallet){
-       service.addWallet(wallet);
+       walletService.addWallet(wallet);
     }
 
     @DeleteMapping(path = "{walletId}")
     public void deleteWallet(@PathVariable("walletId") Integer walletId){
-        service.deleteWallet(walletId);
+        walletService.deleteWallet(walletId);
     }
 }
